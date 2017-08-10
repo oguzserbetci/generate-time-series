@@ -27,7 +27,7 @@ for rep in n_reps:
 ```
 There are 4 parameters: `n_reps`, `k`, `n`, `ssg_epochs` for this algorithm. We set `n` using `n_base` argument `n = ceil(N/n_base)`, meaning we have a cluster for every `n_base` data-points.
 
-![](img/ArrowHead_DataGeneration_3.png)
+![](img/ArrowHead_DataGeneration.png)
 *Figure 1: Example of 3 new data points generated for ArrowHead data*
 
 ## Experiments
@@ -64,7 +64,7 @@ Figure 2: Performance of the MLP on Wine data (smoothed over 10 epochs)*
 #### Adiac
 Expandeding Adiac data set performs also better than more authentic data.
 
-![](/Adiac_Performance10.png)
+![](img/Adiac_Performance10.png)
 *Figure 3: Performance of the MLP on Adiac data*
 
 #### InlineSkate
@@ -76,7 +76,7 @@ Not all data sets we have worked with improved performance. InlineSkates data se
 #### ArrowHead
 Performance on this data set is similar to the InlineSkate, better start in the beginning but same performance in the end.
 
-![](ArrowHead_Performance10.png)
+![](img/ArrowHead_Performance10.png)
 *Figure 5: Performance of the MLP on ArrowHead data*
 
 | Name | Size of training/test set | 1-NN Best Warping Window DTW ( _r_ ) | MLP Performance
