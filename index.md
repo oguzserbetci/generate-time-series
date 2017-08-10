@@ -19,7 +19,7 @@ We need some adjustments, most notibly: a similarity metric for time-series and 
 
 Pseudo-code for the whole algorithm is below, you can find the code in the [repo](https://github.com/oguzserbetci/generate-time-series).
 
-```python
+```
 for rep in n_reps:
     for class in classes:
         for i in k:
