@@ -71,7 +71,7 @@ def spawn(datasetname, n_reps, n_base=4, k=1, ssg_epochs=None, file_suffix='_TRA
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--datasetname', help='Datasetname', type=str)
+    parser.add_argument('-d', '--datasetname', help='Datasetname (=foldername in UCR folder)', type=str)
     parser.add_argument('-r', '--n_reps', help='Number of iterations for the complete procedure', type=int, default=1)
     parser.add_argument('-b', '--n_base', help='Number of data-points to average for creating one new data-point', type=int, default=2)
     parser.add_argument('-k', '--k', help='Number of iterations for K-means clustering', type=int, default=1)

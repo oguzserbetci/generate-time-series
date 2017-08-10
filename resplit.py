@@ -30,7 +30,7 @@ def resplitdatasets(datasetname, suffix="_ALT", ratio=.70):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--datasetname', help='Datasetname', type=str)
+    parser.add_argument('-d', '--datasetname', help='Datasetname (=foldername in UCR folder)', type=str)
     parser.add_argument('-r', '--ratio', help='New ratio of training and test dataset', type=float, default=.7)
     parser.add_argument('-o', '--output_suffix', help='Suffix for training and test files created', type=str, default='_ALT')
 
