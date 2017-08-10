@@ -9,9 +9,9 @@ SEED = 0
 
 def resplitdatasets(datasetname, suffix="_ALT", ratio=.70):
     if os.path.exists('UCR_TS_Archive_2015/{0}/{0}{1}_TRAIN'.format(datasetname, suffix)):
-        print('WARNING FILE EXISTS WITH THIS SUFFIX')
+        print('WARNING TRAIN FILE EXISTS WITH SUFFIX:', suffix)
     if os.path.exists('UCR_TS_Archive_2015/{0}/{0}{1}_TEST'.format(datasetname, suffix)):
-        print('WARNING FILE EXISTS WITH THIS SUFFIX')
+        print('WARNING TEST FILE EXISTS WITH SUFFIX:', suffix)
     train_data = np.loadtxt('UCR_TS_Archive_2015/{0}/{0}_TRAIN'.format(datasetname), delimiter=',')
     test_data = np.loadtxt('UCR_TS_Archive_2015/{0}/{0}_TEST'.format(datasetname), delimiter=',')
 

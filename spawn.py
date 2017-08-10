@@ -1,15 +1,17 @@
-import os
-import argparse
-import numpy as np
-from dtw_mean import ssg
-from fastdtw import fastdtw
+from sklearn.metrics.pairwise import pairwise_distances
 from loaddataset import loaddataset, savedataset
 from collections import Counter
 from functools import partial
-from sklearn.metrics.pairwise import pairwise_distances
+from fastdtw import fastdtw
+from dtw_mean import ssg
+import numpy as np
+import argparse
 import time
 import math
-np.random.seed = 0
+import os
+
+SEED = 0
+np.random.seed = SEED
 
 
 def fastdtw_(x, y):
@@ -43,10 +45,10 @@ def expand_data_set(data, labels, n_reps, n_base, k=1, ssg_epochs=None, callback
     for i in range(n_reps):
         for label in Counter(labels).keys():
             l_data = data[labels == label]
-            count = math.ceil(len(l_data)/n_base)
+            count = math.ceil(len(l_data) / n_base)
             new_clusters, _ = create_new_data(l_data, count + 1, k, ssg_epochs)
             if new_clusters.size:
-                new_labels = np.ones(len(new_clusters))*label
+                new_labels = np.ones(len(new_clusters)) * label
                 callback(data=new_clusters, labels=new_labels)
                 print('{} new data points for label {}'.format(len(new_clusters), label))
                 data = np.concatenate([data, new_clusters])
@@ -55,18 +57,18 @@ def expand_data_set(data, labels, n_reps, n_base, k=1, ssg_epochs=None, callback
 
 
 # see argument documentation
-def spawn(datasetname, n_reps, n_base=4, k=1, ssg_epochs=None, file_suffix='_TRAIN', save_suffix='_EXP_TRAIN'):
-    if os.path.exists('UCR_TS_Archive_2015/{0}/{0}{1}'.format(datasetname, save_suffix)):
-        print('WARNING FILE EXISTS WITH THIS SUFFIX')
-    data, labels, class_dist, _, _, _, N, K = loaddataset(datasetname, file_suffix)
+def spawn(datasetname, n_reps, n_base=4, k=1, ssg_epochs=None, input_suffix='_TRAIN', output_suffix='_EXP_TRAIN'):
+    if os.path.exists('UCR_TS_Archive_2015/{0}/{0}{1}'.format(datasetname, output_suffix)):
+        print('WARNING FILE EXISTS WITH SUFFIX:', output_suffix)
+    data, labels, class_dist, _, _, _, N, K = loaddataset(datasetname, input_suffix)
     print('expanding {} from {} datapoints, with class distribution of: {}'.format(datasetname, len(data), class_dist))
     print('upper bound for data-points generated:', (N / n_base) * n_reps)
     start = time.time()
-    save = partial(savedataset, suffix=save_suffix, dataset_name=datasetname)
+    save = partial(savedataset, suffix=output_suffix, dataset_name=datasetname)
     expanded_data_set, expanded_labels = expand_data_set(data, labels, n_reps, n_base, k, ssg_epochs, save)
     duration = time.time() - start
     print('expanded {} to {} datapoints in {} minutes, class distribution is: {}'.format(datasetname, len(expanded_data_set), duration / 60, Counter(expanded_labels)))
-    savedataset(datasetname, expanded_data_set, expanded_labels, save_suffix + '.bak')
+    savedataset(datasetname, expanded_data_set, expanded_labels, output_suffix + '.bak')
 
 
 if __name__ == '__main__':
