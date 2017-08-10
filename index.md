@@ -27,7 +27,8 @@ for rep in n_reps:
 ```
 There are 4 parameters: `n_reps`, `k`, `n`, `ssg_epochs` for this algorithm. We set `n` using `n_base` argument `n = ceil(N/n_base)`, meaning we have a cluster for every `n_base` data-points.
 
-/ArrowHead_DataGeneration_3.png (Figure 1: Example of 3 new data points generated for ArrowHead data)
+![](img/ArrowHead_DataGeneration_3.png)
+*Figure 1: Example of 3 new data points generated for ArrowHead data*
 
 ## Experiments
 We picked sample datasets from the UCR Time Series Classification Archive[^3] to assess the performance of our approach. Selected datasets are distributed on the scale of 1-NN Best Warping Window DTW. See _Table 1_ for more detail on selected datasets.
@@ -57,12 +58,14 @@ All results are averaged over 10 separate training with 150 epochs.
 #### Wine
 Wine data set is where the results look most promising in our experiments. It is evident the generated data points help the MLP generalize better.
 
-/Wine_Performance_smooth.png (Figure 2: Performance of the MLP on Wine data (smoothed over 10 epochs))
+![](img/Wine_Performance_smooth.png)*
+Figure 2: Performance of the MLP on Wine data (smoothed over 10 epochs)*
 
 #### Adiac
 Expandeding Adiac data set performs also better than more authentic data.
 
-/Adiac_Performance10.png (Figure 3: Performance of the MLP on Adiac data)
+![](/Adiac_Performance10.png)
+*Figure 3: Performance of the MLP on Adiac data*
 
 #### InlineSkate
 Not all data sets we have worked with improved performance. InlineSkates data set had minimal improvement if any. As it is seen in Figure 4, the alternative data set has far outperformed the expanded dataset.
@@ -73,7 +76,8 @@ Not all data sets we have worked with improved performance. InlineSkates data se
 #### ArrowHead
 Performance on this data set is similar to the InlineSkate, better start in the beginning but same performance in the end.
 
-/ArrowHead_Performance10.png (Figure 5: Performance of the MLP on ArrowHead data)
+![](ArrowHead_Performance10.png)
+*Figure 5: Performance of the MLP on ArrowHead data*
 
 | Name | Size of training/test set | 1-NN Best Warping Window DTW ( _r_ ) | MLP Performance
 |:--|:--|:--|:--|
@@ -106,17 +110,22 @@ Artificially generating data-points does not warrant a performance increase for 
 ## APPENDIX
 ### SAMPLES FROM DATASETS
 
-/Wine_Examples.png (Figure 6: Examples of classes from the original Wine data set)
+![](img/Wine_Examples.png)
+*Figure 6: Examples of classes from the original Wine data set*
 
-/Adiac_examples.png (Figure 7: Examples of classes from the original Adiac data set)
+![](img/Adiac_examples.png)
+*Figure 7: Examples of classes from the original Adiac data set*
 
-/InlineSkate_Examples.png (Figure 8: Examples of classes from the original InlineSkate data set)
+![](img/InlineSkate_Examples.png)
+*Figure 8: Examples of classes from the original InlineSkate data set*
 
 ### SYNTHETIC DATA-POINTS
 
-/InlineSkate_DataGeneration2.png (Figure 9: Examples of data-points generated for classes from original InlineSkate data set)
+![](img/InlineSkate_DataGeneration2.png)
+*Figure 9: Examples of data-points generated for classes from original InlineSkate data set*
 
-/Adiac_DataGeneration.png (Figure 10: Examples of data-points generated for classes from original Adiac data set)
+![](img/Adiac_DataGeneration.png)
+*Figure 10: Examples of data-points generated for classes from original Adiac data set*
 
 [^1]: [fastdtw](https://pypi.python.org/pypi/fastdtw)
 
