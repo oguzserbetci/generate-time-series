@@ -107,6 +107,8 @@ Artificially generating data-points does not warrant a performance increase for 
 2. Number of iterations for the SSG mean, we haven’t set this parameter (ssg_epochs).
 3. Number of bases, we set this as 2 (n_base).
 
+- - -
+
 ## APPENDIX
 ### SAMPLES FROM DATASETS
 
