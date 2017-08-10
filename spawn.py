@@ -38,10 +38,10 @@ def create_new_data(data, count, k=1, ssg_epochs=None):
     return clusters, alloc
 
 
-def expand_data_set(data, labels, class_dist, n_base, n_reps, k=1, ssg_epochs=None, callback=None):
+def expand_data_set(data, labels, n_reps, n_base, k=1, ssg_epochs=None, callback=None):
     old_data_offset = len(data)
     for i in range(n_reps):
-        for label in class_dist.keys():
+        for label in Counter(labels).keys():
             l_data = data[labels == label]
             count = math.ceil(len(l_data)/n_base)
             new_clusters, _ = create_new_data(l_data, count + 1, k, ssg_epochs)
@@ -63,7 +63,7 @@ def spawn(datasetname, n_reps, n_base=4, k=1, ssg_epochs=None, file_suffix='_TRA
     print('upper bound for data-points generated:', (N / n_base) * n_reps)
     start = time.time()
     save = partial(savedataset, suffix=save_suffix, dataset_name=datasetname)
-    expanded_data_set, expanded_labels = expand_data_set(data, labels, class_dist, n_base, n_reps, k, ssg_epochs, save)
+    expanded_data_set, expanded_labels = expand_data_set(data, labels, n_reps, n_base, k, ssg_epochs, save)
     duration = time.time() - start
     print('expanded {} to {} datapoints in {} minutes, class distribution is: {}'.format(datasetname, len(expanded_data_set), duration / 60, Counter(expanded_labels)))
     savedataset(datasetname, expanded_data_set, expanded_labels, save_suffix + '.bak')
