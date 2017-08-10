@@ -74,7 +74,7 @@ Not all data sets we have worked with improved performance. InlineSkates data se
 *Figure 4: Performance of the MLP on InlineSkate data*
 
 #### ArrowHead
-Performance on this data set is similar to the InlineSkate, better start in the beginning but same performance in the end.
+Performance on this data set is similar to the InlineSkate, better start but same performance in the end.
 
 ![](img/ArrowHead_Performance10.png)
 *Figure 5: Performance of the MLP on ArrowHead data*
