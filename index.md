@@ -58,8 +58,8 @@ All results are averaged over 10 separate training with 150 epochs.
 #### Wine
 Wine data set is where the results look most promising in our experiments. It is evident the generated data points help the MLP generalize better.
 
-![](img/Wine_Performance_smooth.png)*
-Figure 2: Performance of the MLP on Wine data (smoothed over 10 epochs)*
+![](img/Wine_Performance_smooth.png)
+*Figure 2: Performance of the MLP on Wine data (smoothed over 10 epochs)*
 
 #### Adiac
 Expandeding Adiac data set performs also better than more authentic data.
