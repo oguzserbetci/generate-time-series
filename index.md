@@ -121,7 +121,7 @@ Artificially generating data-points does not warrant a performance increase for 
 
 ### SYNTHETIC DATA-POINTS
 
-![](img/InlineSkate_DataGeneration2.png)
+![](img/InlineSkate_DataGeneration.png)
 *Figure 9: Examples of data-points generated for classes from original InlineSkate data set*
 
 ![](img/Adiac_DataGeneration.png)
