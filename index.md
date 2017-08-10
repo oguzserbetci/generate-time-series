@@ -1,4 +1,4 @@
-# Synthetic Time-Series Data Generation Training Classification Models
+## Introduction
 A time-series data point is series of measurements which have been gathered periodically over time, often with equal intervals. Classifying time-series data for signal processing and pattern recognition on portable devices is desirable in many applications. Since pre-trained simple artificial neural networks are very fast at prediction, they can be utilized for these applications. One bottleneck for this approach is that ANNs require large datasets to train on to not overfit. This project explores a way to generate synthetic time-series data from existing datasets to help neural networks not overfit on small datasets.
 
 First, we will modify the *k-means algorithm* in Method to generate synthetic time-series data from an existing dataset. In Evaluation, we will empirically compare prediction performance of a simple Multi-Layer-Perceptron model trained with the original dataset, the original dataset together with synthetically generated data-points and a bigger authentic dataset acquired through re-splitting the training and test data sets.
