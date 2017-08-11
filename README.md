@@ -3,6 +3,9 @@ Generate synthetic time-series data using DTW and Stochastic Subgradient averagi
 
 To test the scripts, download [UCR](http://www.cs.ucr.edu/~eamonn/time_series_data/) dataset in the same folder as the scripts.
 
+Use python3 and install required packages:
+`pip install -r requirements.txt`
+
 To use the scripts with your own data, use the `expand_data_set` function in `spawn.py`.
 
 # generate new dataset
