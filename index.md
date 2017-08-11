@@ -1,36 +1,45 @@
 ## Introduction
-A time-series data point is series of measurements which have been gathered periodically over time, often with equal intervals. Classifying time-series data for signal processing and pattern recognition on portable devices is desirable in many applications. Since pre-trained simple artificial neural networks are very fast at prediction, they can be utilized for these applications. One bottleneck for this approach is that ANNs require large datasets to train on to not overfit. This project explores a way to generate synthetic time-series data from existing datasets to help neural networks not overfit on small datasets.
+A time series data point is a series of measurements which have been gathered periodically over time, often with equal intervals. Classifying time series data for signal processing and pattern recognition on portable devices is desirable in many applications. Since pre-trained simple artificial neural networks are very fast at prediction, they can be utilized for these applications. One bottleneck for this approach is that ANNs require large datasets to train on to not overfit. This project explores a way to generate synthetic time series data from existing datasets to help neural networks not overfit on small datasets.
 
-First, we will modify the *k-means algorithm* in Method to generate synthetic time-series data from an existing dataset. In Evaluation, we will compare prediction performance of a simple Multi-Layer-Perceptron model trained with the original dataset, the original dataset together with synthetically generated data-points and a bigger authentic dataset acquired through re-splitting the training and test data sets.
+First, we will modify the *k-means algorithm* in Method to generate synthetic time series data from an existing dataset. In Evaluation, we will compare prediction performance of a simple Multi-Layer-Perceptron model trained with the original dataset, the original dataset together with synthetically generated data points and a bigger authentic dataset acquired through re-splitting the training and test sets.
 
 ## Method
-K-means is a popular clustering algorithm. After initializing with k random centroids, the algorithm works loops through two steps: 1) Assignment step assigns every data point to the _closest_ centroid according to a selected metric. 2) Expectation step moves centroids to be in the _center_ of the assigned data-points, again according to a selected metric.
+We want to generate new data points which carry characteristics of the original data. To achieve this, we will modify the popular K-means clustering algorithm. After initializing with _n_ random centroids, the algorithm loops through two steps: 1) Assignment step assigns every data point to the _closest_ centroid according to a selected distance measure. 2) Expectation step moves centroids to be in the _center_ of the assigned data points, again according to a selected distance measure.
 
-We need some adjustments, most notibly: a similarity metric for time-series and a method for calculating time-series sample mean.
+Generated centroids are used typically for clustering but we use them as new data points.
 
-1. Initialise centroids with k random data-points
-2. Use _dynamic time warping_(DTW) as the distance metric to assign data points to centroids. DTW is a similarity metric for time-series. We use fastdtw[^1]
-3. As a sample mean to calculate new centroids, use the Schultz’ and Jain’s stochastic subgradient mean algorithm [^2]
-4. Remove clusters with only one data-point assignment because they are identical to this data-point
-5. Repeat step 2 to 4 for n iterations
+We need some adjustments, most notably: a distance measure for time series and a method for calculating mean of time series samples. Outline of the procedure is as follows:
+
+1. Initialise centroids with _n_ random data points
+2. Use _dynamic time warping_ (DTW) as the distance measure to assign data points to centroids. DTW is a distance measure for time series. We use the fastdtw[^1] implemenation for python
+3. As a sample mean to calculate new centroids, use the Schultz and Jain’s stochastic subgradient mean algorithm [^2]
+4. Remove clusters with only one assignment as they are identical
+5. Repeat step 2 to 4 for k iterations
 
 ![](img/ArrowHead_DataNewClusters.png)
-*Figure 1: Example of 3 new clusters generated for one class in ArrowHead*
+*Figure 1: Example of 3 new clusters generated for a class in ArrowHead*
 
-Pseudo-code for the whole algorithm is below, you can find the code in the [repo](https://github.com/oguzserbetci/generate-time-series).
+The algorithm has 4 parameters: `k`: number of k-means iterations, `ssg_epochs`: number of iterations for ssg algorithm, `n_base`: controls the number of centroids to be generated(_n_), intuitively algorithm generates one centroid for every `n_base` data points. Pseudo-code for the whole algorithm is below, you can find the code in the [repo](https://github.com/oguzserbetci/generate-time-series).
 
 ```
-for rep in n_reps:
-    for class in classes:
-        for i in k:
-            clusters ← pick n random data-points from class;
-            allocate each data point to the nearest cluster using DTW;
+func spawn(data, k, n_base, ssg_epochs):
+    new_data = []
 
-            for cluster in clusters:
-                cluster ← SSG(data points allocated to the cluster, ssg_epochs);
+    for c in classes:
+        c_data ← data where data class is c
+        n ← ceil(|c| / n_base)
+        repeat k times:
+            centroids ← pick n random observations from c_data
+            allocations ← argmin(DTW(x, centroids)) for x in x_data
+
+            for centroid in centroids:
+                centroid ← SSG(data where allocation is to centroid, ssg_epochs)
+        new_data += [c, centroids]
+
+    return new_data
 ```
 
-There are 4 parameters: `n_reps`, `k`, `n`, `ssg_epochs` for this algorithm. We set `n` using `n_base` argument `n = ceil(N/n_base)`, meaning we generate a cluster for every `n_base` data-points.
+This function then can be called many times, we call it 10 times and use generated data to create new data as well.
 
 ![](img/ArrowHead_DataGeneration.png)
 *Figure 2: Example of 3 new data points generated for ArrowHead data*
@@ -45,11 +54,11 @@ We picked sample datasets from the UCR Time Series Classification Archive[^3] to
 | Adiac | 390/391 | 37 | 176 | 0.391 |
 | InlineSkate | 100/550 | 7 | 1882 | 0.613 |
 
-> Table 1: Datasets compared in our experiments
+> Table 1: We compare accuracy of a simple MLP model using these datasets
 
 ### Data preparation
 We create 3 datasets to compare performance on:
-_EXP_: Original dataset together with synthetic data-points generated from it is referred with EXP label (abbreviation for expanded). We expand based on the original dataset and merge them before training. We use `k=1`, `n_reps=10`, `n_base=2`, `ssg_epochs=None` – which means SSG algorithm sets it.
+_EXP_: Original dataset together with synthetic data points generated from it is referred with EXP label (abbreviation for expanded). We expand based on the original dataset and merge them before training. We use `k=1`, `n_reps=10`, `n_base=2`, `ssg_epochs=None` – which means SSG algorithm sets it.
 
 _ALT_: We have re-split the training and test data to show the performance gain in case we could collect more data. In our experiments, we split the data to 70% training, 30% test. Resulting sets are labeled with ALT (abbreviation for alternative)
 
@@ -58,7 +67,7 @@ _ORG_: The untouched training sets are labeled with ORG (abbreviation for origin
 See Figure 2 above and Figure 7, 8, 9, 10, 11 in appendix for visualisations of the data.
 
 ### Model
-Because selected data sets are very small in size, reliable model validation is not feasible. Model parameters are selected without validation and prior-knowledge, accordingly, they are only illustrative. Our simple Multi-Layer-Perceptron architecture is as follows: 2 hidden layers with 50 and 30 neurons with rectifier activation and 0.1 dropout.
+Because selected datasets are very small in size, reliable model validation is not feasible. We use a simple Multi-Layer-Perceptron architecture with: 2 hidden layers with 50 and 30 neurons with rectifier activation and 0.1 dropout. Model parameters are selected without validation and prior-knowledge, accordingly, it is only illustrative.
 
 ### Evaluations
 All results are averaged over 10 separate training with 150 epochs.
@@ -67,25 +76,23 @@ All results are averaged over 10 separate training with 150 epochs.
 Expanded Wine data is where the results look most promising in our experiments. It is evident the generated data points help the MLP generalize better, and even perform better than additional authentic data.
 
 ![](img/Wine_Performance_smooth.png)
-*Figure 3: Performance of the MLP on Wine data (smoothed over 10 epochs)*
+*Figure 3: MLP accuracy of Wine test and training sets over training epochs (smoothed over 10 epochs)*
 
 #### Adiac
-Expanding Adiac data performs also better than additional authentic data.
-
 ![](img/Adiac_Performance10.png)
-*Figure 4: Performance of the MLP on Adiac data*
+*Figure 4: MLP accuracy of Adiac test and training sets over training epochs*
 
 #### InlineSkate
-Not all data sets we have worked with improved performance. Expanded InlineSkate data has had minimal improvement if any. As it is seen in Figure 4, the alternative data set has far outperformed the expanded dataset.
+Not all datasets we have worked with improved performance. Expanded InlineSkate data has had minimal improvement if any. As it is seen in Figure 4, the alternative dataset has far outperformed the expanded dataset.
 
 ![](img/InlineSkate_Performance10.png)
-*Figure 5: Performance of the MLP on InlineSkate data*
+*Figure 5: MLP accuracy of InlineSkate test and training sets over training epochs*
 
 #### ArrowHead
-Performance on this data set is similar to the InlineSkate, better start but same performance in the end.
+Performance on this dataset is similar to the InlineSkate, better start but same performance in the end.
 
 ![](img/ArrowHead_Performance10.png)
-*Figure 6: Performance of the MLP on ArrowHead data*
+*Figure 6: MLP accuracy of ArrowHead test and training sets over training epochs*
 
 | Name | Size of training/test set | 1-NN Best Warping Window DTW ( _r_ ) | MLP Performance
 |:--|:--|:--|:--|
@@ -106,10 +113,10 @@ Performance on this data set is similar to the InlineSkate, better start but sam
             EXP | 1260/550 |       | 0.661 |
             ALT | 454/196  |       | 0.564 |
 
-> Table 2: Size of generated data sets and MLPs performance
+> Table 2: Size of generated datasets and MLPs performance
 
 ## Conclusion
-Artificially generating data-points does not warrant a performance increase for all datasets. But for some data, it has substantial benefit despite the simple model we have used. Furthermore, there are many parameters that can be tuned to possibly reach higher accuracy.
+Artificially generating data points does not warrant a performance increase for all datasets. But for some data, it has substantial benefit despite the simple model we have used. Furthermore, there are many parameters that can be tuned to possibly reach higher accuracy.
 
 1. Number of iterations for the k-means algorithm (`n_reps`). We have used 1 iteration.
 2. Number of iterations for the SSG mean, we haven’t set this parameter (`ssg_epochs`).
@@ -121,24 +128,25 @@ Artificially generating data-points does not warrant a performance increase for 
 ### SAMPLES FROM DATASETS
 
 ![](img/Wine_Examples.png)
-*Figure 7: Examples of classes from the original Wine data set*
+*Figure 7: Examples of classes from the original Wine dataset*
 
 ![](img/Adiac_examples.png)
-*Figure 8: Examples of classes from the original Adiac data set*
+*Figure 8: Examples of classes from the original Adiac dataset*
 
 ![](img/InlineSkate_Examples.png)
-*Figure 9: Examples of classes from the original InlineSkate data set*
+*Figure 9: Examples of classes from the original InlineSkate dataset*
 
-### SYNTHETIC DATA-POINTS
+### SYNTHETIC DATA POINTS
 
 ![](img/InlineSkate_DataGeneration.png)
-*Figure 10: Examples of data-points generated for classes from original InlineSkate data set*
+*Figure 10: Examples of data points generated for classes from original InlineSkate dataset*
 
 ![](img/Adiac_DataGeneration.png)
-*Figure 11: Examples of data-points generated for classes from original Adiac data set*
+*Figure 11: Examples of data points generated for classes from original Adiac dataset*
 
 [^1]: [fastdtw](https://pypi.python.org/pypi/fastdtw)
 
 [^2]: D. Schultz and B. Jain, “Nonsmooth Analysis and Subgradient Methods for Averaging in Dynamic Time Warping Spaces,” arXiv Prepr. [arXiv1701.06393](https://arxiv.org/abs/1701.06393), 2017.
 
+            centroids ← pick n random observations from class;
 [^3]: [UCR Time Series Classification Archive](http://www.cs.ucr.edu/~eamonn/time_series_data/)
