@@ -25,7 +25,7 @@ func spawn(data, k, n_base, ssg_epochs):
 
     for c in classes:
         c_data ← data with class c
-        n ← ceil(|c| / n_base)
+        n ← ceil(|c_data| / n_base)
         repeat k times:
             centroids ← pick n random data points from c_data
             allocate each data point from c_data to the nearest cluster using DTW
