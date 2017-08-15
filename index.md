@@ -8,14 +8,14 @@ We want to generate new data points which carry the characteristics of the origi
 
 Resulting centroids are typically used for clustering but we use them as new data points. Other adjustments we do are: a distance measure for time series and a method for calculating mean of time series samples. Outline of the procedure is as follows:
 
-1. Initialise centroids with _n_ random data points
-2. Use _dynamic time warping_ (DTW) as the distance measure to assign data points to centroids. DTW is a distance measure for time series. We use the fastdtw[^1] implemenation for python
-3. Remove clusters with only one assignment as one assignment mean will not be augmented
-4. As a sample mean to calculate new centroids, use the Schultz and Jain’s stochastic subgradient mean algorithm [^2]
-5. Repeat step 2 to 4 for k iterations
+1. Initialise centroids with _n_ random data points.
+2. Use _dynamic time warping_ (DTW) as the distance measure to assign data points to centroids. DTW is a distance measure for time series. We use the fastdtw[^1] implemenation for python.
+3. Remove clusters with only one assignment as one assignment mean will not be augmented.
+4. As a sample mean to calculate new centroids, use the Schultz and Jain’s stochastic subgradient mean algorithm [^2].
+5. Repeat step 2 to 4 for k iterations.
 
 ![](img/ArrowHead_DataNewCentroids.png)
-*Figure 1: Example of 3 new clusters generated for a class in ArrowHead*
+*Figure 1: Example of 3 new clusters generated for a class in ArrowHead.*
 
 The algorithm has 4 parameters: `k` is the number of k-means iterations, `ssg_epochs` is the number of iterations for ssg algorithm, `n_base` controls the number of centroids to be generated (=_n_), intuitively algorithm generates one centroid for every `n_base` data points. Pseudo-code for the whole algorithm is below, you can find the code in the [repo](https://github.com/oguzserbetci/generate-time-series).
 
@@ -38,10 +38,10 @@ func spawn(data, k, n_base, ssg_epochs):
     return new_data
 ```
 
-This function can be then called many times; we call it 10 times and feed generated data to create new data as well.
+This function can be then called many times; we called it 10 times and fed the generated data to create new data as well.
 
 ![](img/ArrowHead_DataGeneration.png)
-*Figure 2: Example of 3 new data points generated for ArrowHead data*
+*Figure 2: Example of 3 new data points generated for ArrowHead data.*
 
 ## Experiments
 We picked sample datasets from the UCR Time Series Classification Archive[^3] to assess the performance of our approach. Selected datasets are distributed on the scale of 1-NN Best Warping Window DTW. See _Table 1_ for more detail on selected datasets.
@@ -75,23 +75,23 @@ Accuracy performance of the MLP is averaged over 10 training runs with 150 epoch
 Expanded Wine data is where the results look most promising in our experiments. It is evident the generated data points help the MLP generalize better, and even perform better than additional authentic data.
 
 ![](img/Wine_Performance_smooth.png)
-*Figure 3: MLP accuracy on Wine training and test sets over training epochs (smoothed over 10 epochs)*
+*Figure 3: MLP accuracy on Wine training and test sets over training epochs (smoothed over 10 epochs).*
 
 #### Adiac
 ![](img/Adiac_Performance10.png)
-*Figure 4: MLP accuracy on Adiac training and test sets over training epochs*
+*Figure 4: MLP accuracy on Adiac training and test sets over training epochs.*
 
 #### InlineSkate
 Not all datasets we have worked with improved performance. Expanded InlineSkate data has had minimal improvement if any. As it is seen in Figure 4, the alternative dataset has far outperformed the expanded dataset.
 
 ![](img/InlineSkate_Performance10.png)
-*Figure 5: MLP accuracy on InlineSkate training and test sets over training epochs*
+*Figure 5: MLP accuracy on InlineSkate training and test sets over training epochs.*
 
 #### ArrowHead
 Performance on this dataset is similar to the InlineSkate, better start but same performance in the end.
 
 ![](img/ArrowHead_Performance10.png)
-*Figure 6: MLP accuracy of ArrowHead training test sets over training epochs*
+*Figure 6: MLP accuracy of ArrowHead training test sets over training epochs.*
 
 | Name | Size of training/test set | 1-NN Best Warping Window DTW ( _r_ ) | MLP Performance
 |:--|:--|:--|:--|
@@ -128,21 +128,21 @@ Artificially generating data points does not warrant a performance increase for 
 ### SAMPLES FROM DATASETS
 
 ![](img/Wine_Examples.png)
-*Figure 7: Examples of classes from the original Wine dataset*
+*Figure 7: Examples of classes from the original Wine dataset.*
 
 ![](img/Adiac_examples.png)
-*Figure 8: Examples of classes from the original Adiac dataset*
+*Figure 8: Examples of classes from the original Adiac dataset.*
 
 ![](img/InlineSkate_Examples.png)
-*Figure 9: Examples of classes from the original InlineSkate dataset*
+*Figure 9: Examples of classes from the original InlineSkate dataset.*
 
 ### SYNTHETIC DATA POINTS
 
 ![](img/InlineSkate_DataGeneration.png)
-*Figure 10: Examples of data points generated for classes from original InlineSkate dataset*
+*Figure 10: Examples of data points generated for classes from original InlineSkate dataset.*
 
 ![](img/Adiac_DataGeneration.png)
-*Figure 11: Examples of data points generated for classes from original Adiac dataset*
+*Figure 11: Examples of data points generated for classes from original Adiac dataset.*
 
 ## References
 
