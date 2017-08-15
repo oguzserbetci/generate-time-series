@@ -1,0 +1,12 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+p, ul, ol, table, pre, dl {
+  text-align: justify;
+}
+
+footer {
+  text-align: left;
+}
