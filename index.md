@@ -14,7 +14,7 @@ Resulting centroids are typically used for clustering but we use them as new dat
 4. As a sample mean to calculate new centroids, use the Schultz and Jain’s stochastic subgradient mean algorithm [^2]
 5. Repeat step 2 to 4 for k iterations
 
-![](img/ArrowHead_DataNewClusters.png)
+![](img/ArrowHead_DataNewCentroids.png)
 *Figure 1: Example of 3 new clusters generated for a class in ArrowHead*
 
 The algorithm has 4 parameters: `k` is the number of k-means iterations, `ssg_epochs` is the number of iterations for ssg algorithm, `n_base` controls the number of centroids to be generated (=_n_), intuitively algorithm generates one centroid for every `n_base` data points. Pseudo-code for the whole algorithm is below, you can find the code in the [repo](https://github.com/oguzserbetci/generate-time-series).
@@ -38,7 +38,7 @@ func spawn(data, k, n_base, ssg_epochs):
     return new_data
 ```
 
-This function then can be called many times, we call it 10 times and use generated data to create new data as well.
+This function can be then called many times; we call it 10 times and feed generated data to create new data as well.
 
 ![](img/ArrowHead_DataGeneration.png)
 *Figure 2: Example of 3 new data points generated for ArrowHead data*
@@ -120,6 +120,7 @@ Artificially generating data points does not warrant a performance increase for 
 1. Number of iterations for the k-means algorithm (`n_reps`). We have used 1 iteration.
 2. Number of iterations for the SSG mean, we haven’t set this parameter (`ssg_epochs`).
 3. Number of bases, we set this as 2 (`n_base`).
+4. Not using the generated data as a basis for new data
 
 - - -
 
