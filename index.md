@@ -144,9 +144,10 @@ Artificially generating data points does not warrant a performance increase for 
 ![](img/Adiac_DataGeneration.png)
 *Figure 11: Examples of data points generated for classes from original Adiac dataset*
 
+## References
+
 [^1]: [fastdtw](https://pypi.python.org/pypi/fastdtw)
 
 [^2]: D. Schultz and B. Jain, “Nonsmooth Analysis and Subgradient Methods for Averaging in Dynamic Time Warping Spaces,” arXiv Prepr. [arXiv1701.06393](https://arxiv.org/abs/1701.06393), 2017.
 
-            centroids ← pick n random observations from class;
 [^3]: [UCR Time Series Classification Archive](http://www.cs.ucr.edu/~eamonn/time_series_data/)
