@@ -10,12 +10,12 @@ Resulting centroids are typically used for clustering but we use them as new dat
 
 1. Initialise centroids with _n_ random data points.
 2. Use _dynamic time warping_ (DTW) as the distance measure to assign data points to centroids. DTW is a distance measure for time series. We use the fastdtw[^1] implemenation for python.
-3. Remove clusters with only one assignment as one assignment mean will not be augmented.
+3. Remove centroids with only one assignment as one assignment mean will not be augmented.
 4. As a sample mean to calculate new centroids, use the Schultz and Jain’s stochastic subgradient mean algorithm [^2].
 5. Repeat step 2 to 4 for k iterations.
 
 ![](img/ArrowHead_DataNewCentroids.png)
-*Figure 1: Example of 3 new clusters generated for a class in ArrowHead.*
+*Figure 1: Example of 3 new centroids generated for a class in ArrowHead. Second centroid is dropped because of step 3.*
 
 The algorithm has 4 parameters: `k` is the number of k-means iterations, `ssg_epochs` is the number of iterations for ssg algorithm, `n_base` controls the number of centroids to be generated (=_n_), intuitively algorithm generates one centroid for every `n_base` data points. Pseudo-code for the whole algorithm is below, you can find the code in the [repo](https://github.com/oguzserbetci/generate-time-series).
 
@@ -28,7 +28,7 @@ func spawn(data, k, n_base, ssg_epochs):
         n ← ceil(|c_data| / n_base)
         repeat k times:
             centroids ← pick n random data points from c_data
-            allocate each data point from c_data to the nearest cluster using DTW
+            allocate each data point from c_data to the nearest centroid using DTW
 
             for centroid in centroids:
                 centroid ← SSG(subset of c_data which is allocated to centroid, ssg_epochs)
