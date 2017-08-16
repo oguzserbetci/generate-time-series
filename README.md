@@ -1,10 +1,12 @@
-# generate-time-series
-Generate synthetic time-series data using DTW and Stochastic Subgradient averaging
+# Synthetic time series generation for training simple multi-layer-perceptron classififier
+This project explores using DTW and Stochastic Subgradient averaging for synthetic time-series data generation.
+
+See the general [overview of methods and evaluation](https://oguzserbetci.github.io/generate-time-series/).
 
 To test the scripts, download [UCR](http://www.cs.ucr.edu/~eamonn/time_series_data/) dataset in the same folder as the scripts.
 
 Use python3 and install required packages:
-`pip install -r requirements.txt`
+`pip3 install -r requirements.txt`
 
 To use the scripts with your own data, use the `expand_data_set` function in `spawn.py`.
 
