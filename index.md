@@ -4,9 +4,15 @@ A time series data point is a series of measurements which have been gathered pe
 First, we will modify the *k-means algorithm* to generate synthetic time series data from an existing dataset. In Evaluation, we will compare prediction performance of a simple Multi-Layer-Perceptron model trained with the original dataset, the original dataset together with synthetically generated data points and a bigger authentic dataset acquired through re-splitting the training and test sets.
 
 ## Method
-We want to generate new data points which carry the characteristics of the original data. To achieve this, we will modify the popular k-means clustering algorithm. After initializing with _n_ random centroids, the algorithm loops through two steps: 1) Assignment step assigns every data point to the _closest_ centroid according to a selected distance measure. 2) Expectation step moves centroids to be in the _center_ of the assigned data points, again according to a selected distance measure.
+We want to generate new data points which carry the characteristics of the original data.
+To achieve this, we will modify the k-means clustering algorithm.
+After initializing with _n_ random centroids, the algorithm loops through two steps:
+1) Assignment step assigns every data point to the _closest_ centroid according to a selected distance measure.
+2) Expectation step moves centroids to be in the _center_ of the assigned data points, again according to a selected distance measure.
 
-Resulting centroids are typically used for clustering but we use them as new data points. Other adjustments we do are: a distance measure for time series and a method for calculating mean of time series samples. Outline of the procedure is as follows:
+Resulting centroids are typically used for clustering. Instead, we run the k-means algorithm for each class seperately and use the resulting clusters as new data points.
+Other adjustments we do are: a distance measure for time series and a method for calculating mean of time series samples.
+Outline of the procedure is as follows:
 
 1. Initialise centroids with _n_ random data points.
 2. Use _dynamic time warping_ (DTW) as the distance measure to assign data points to centroids. DTW is a distance measure for time series. We use the fastdtw[^1] implemenation for python.
