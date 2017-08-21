@@ -1,7 +1,12 @@
 ## Introduction
-A time series data point is a series of measurements which have been gathered periodically over time, often with equal intervals. Classifying time series data for signal processing and pattern recognition on portable devices is desirable in many applications. Since pre-trained simple artificial neural networks are very fast at prediction, they can be utilized for these applications. One bottleneck for this approach is that ANNs require large datasets to train on to not overfit. This project explores a way to generate synthetic time series data from existing datasets to help neural networks not overfit on small datasets.
+A time series data point is a series of measurements which have been gathered periodically over time, often with equal intervals.
+Classifying time series data for signal processing and pattern recognition on portable devices is desirable in many applications.
+Since pre-trained simple artificial neural networks are very fast at prediction, they can be utilized for these applications.
+One bottleneck for this approach is that ANNs require large datasets to train on to not overfit.
+This project explores a way to generate synthetic time series data from existing datasets to help neural networks not overfit on small datasets.
 
-First, we will modify the *k-means algorithm* to generate synthetic time series data from an existing dataset. In Evaluation, we will compare prediction performance of a simple Multi-Layer-Perceptron model trained with the original dataset, the original dataset together with synthetically generated data points and a bigger authentic dataset acquired through re-splitting the training and test sets.
+First, we will modify the *k-means algorithm* to generate synthetic time series data from an existing dataset.
+In Evaluation, we will compare prediction performance of a simple Multi-Layer-Perceptron model trained with the original dataset, the original dataset together with synthetically generated data points and a bigger authentic dataset acquired through re-splitting the training and test sets.
 
 ## Method
 We want to generate new data points which carry the characteristics of the original data.
@@ -23,7 +28,8 @@ Outline of the procedure is as follows:
 ![](img/ArrowHead_DataNewCentroids.png)
 *Figure 1: Example of 3 new centroids generated for a class in ArrowHead. Second centroid is dropped because of step 3.*
 
-The algorithm has 4 parameters: `k` is the number of k-means iterations, `ssg_epochs` is the number of iterations for ssg algorithm, `n_base` controls the number of centroids to be generated (=_n_), intuitively algorithm generates one centroid for every `n_base` data points. Pseudo-code for the whole algorithm is below, you can find the code in the [repo](https://github.com/oguzserbetci/generate-time-series).
+The algorithm has 4 parameters: `k` is the number of k-means iterations, `ssg_epochs` is the number of iterations for ssg algorithm, `n_base` controls the number of centroids to be generated (=_n_), intuitively algorithm generates one centroid for every `n_base` data points.
+Pseudo-code for the whole algorithm is below, you can find the code in the [repo](https://github.com/oguzserbetci/generate-time-series).
 
 ```
 func spawn(data, k, n_base, ssg_epochs):
@@ -50,7 +56,9 @@ This function can be then called many times; we called it 10 times and fed the g
 *Figure 2: Example of 3 new data points generated for ArrowHead data.*
 
 ## Experiments
-We picked sample datasets from the UCR Time Series Classification Archive[^3] to assess the performance of our approach. Selected datasets are distributed on the scale of 1-NN Best Warping Window DTW. See _Table 1_ for more detail on selected datasets.
+We picked sample datasets from the UCR Time Series Classification Archive[^3] to assess the performance of our approach.
+Selected datasets are distributed on the scale of 1-NN Best Warping Window DTW.
+See _Table 1_ for more detail on selected datasets.
 
 | Name | Size of training/test set | Number of classes | Time series length | 1-NN Best Warping Window DTW ( _r_ ) |
 |:--|:--|:--|:--|:--|
@@ -63,22 +71,27 @@ We picked sample datasets from the UCR Time Series Classification Archive[^3] to
 
 ### Data preparation
 We create 3 datasets to compare performance on:
-_EXP_: Original dataset together with synthetic data points generated from it is referred with EXP label (abbreviation for expanded). We expand based on the original dataset and merge them before training. We use `k=1`, `n_reps=10`, `n_base=2`, `ssg_epochs=None` – which means SSG algorithm sets it.
+_EXP_: Original dataset together with synthetic data points generated from it is referred with EXP label (abbreviation for expanded).
+We expand based on the original dataset and merge them before training. We use `k=1`, `n_reps=10`, `n_base=2`, `ssg_epochs=None` – which means SSG algorithm sets it.
 
-_ALT_: We have re-split the training and test data to show the performance gain in case we could collect more data. In our experiments, we split the data to 70% training, 30% test. Resulting sets are labeled with ALT (abbreviation for alternative)
+_ALT_: We have re-split the training and test data to show the performance gain in case we could collect more data.
+In our experiments, we split the data to 70% training, 30% test. Resulting sets are labeled with ALT (abbreviation for alternative)
 
 _ORG_: The untouched training sets are labeled with ORG (abbreviation for original)
 
 See Figure 2 above and Figure 7, 8, 9, 10, 11 in appendix for visualisations of the data.
 
 ### Model
-Because selected datasets are very small in size, reliable model validation is not feasible. We use a simple Multi-Layer-Perceptron architecture with: 2 hidden layers with 50 and 30 neurons with rectifier activation and 0.1 dropout. Model parameters are selected without validation and prior-knowledge, accordingly, it is only illustrative.
+Because selected datasets are small, reliable model validation is not feasible.
+We use a simple Multi-Layer-Perceptron architecture with: 2 hidden layers with 50 and 30 neurons with rectifier activation and 0.1 dropout.
+Model parameters are selected without validation and prior-knowledge, accordingly, it is only illustrative.
 
 ### Evaluations
 Accuracy performance of the MLP is averaged over 10 training runs with 150 epochs.
 
 #### Wine
-Expanded Wine data is where the results look most promising in our experiments. It is evident the generated data points help the MLP generalize better, and even perform better than additional authentic data.
+Expanded Wine data is where the results look most promising in our experiments.
+It is evident the generated data points help the MLP generalize better, and even perform better than additional authentic data.
 
 ![](img/Wine_Performance_smooth.png)
 *Figure 3: MLP accuracy on Wine training and test sets over training epochs (smoothed over 10 epochs).*
@@ -88,7 +101,9 @@ Expanded Wine data is where the results look most promising in our experiments. 
 *Figure 4: MLP accuracy on Adiac training and test sets over training epochs.*
 
 #### InlineSkate
-Not all datasets we have worked with improved performance. Expanded InlineSkate data has had minimal improvement if any. As it is seen in Figure 4, the alternative dataset has far outperformed the expanded dataset.
+Not all datasets we have worked with improved performance.
+Expanded InlineSkate data has had minimal improvement if any.
+As it is seen in Figure 4, the alternative dataset has far outperformed the expanded dataset.
 
 ![](img/InlineSkate_Performance10.png)
 *Figure 5: MLP accuracy on InlineSkate training and test sets over training epochs.*
@@ -121,7 +136,9 @@ Performance on this dataset is similar to the InlineSkate, better start but same
 > Table 2: Size of generated datasets and MLPs performance
 
 ## Conclusion
-Artificially generating data points does not warrant a performance increase for all datasets. But for some data, it has substantial benefit despite the simple model we have used. Furthermore, there are many parameters that can be tuned to possibly reach higher accuracy.
+Artificially generating data points does not warrant a performance increase for all datasets.
+But for some data, it has substantial benefit despite the simple model we have used.
+Furthermore, there are many parameters that can be tuned to possibly reach higher accuracy.
 
 1. Number of iterations for the k-means algorithm (`n_reps`). We have used 1 iteration.
 2. Number of iterations for the SSG mean, we haven’t set this parameter (`ssg_epochs`).
