@@ -1,5 +1,5 @@
-# Synthetic time series generation for training simple multi-layer-perceptron classififier
-This project explores using DTW and Stochastic Subgradient averaging for synthetic time-series data generation.
+# Synthetic time series generation for training simple multi-layer-perceptron classifier
+This project explores using dynamic-time-warping (DTW) and Stochastic Subgradient averaging (SSG) for synthetic time-series data generation.
 
 See the general [overview of methods and evaluation](https://oguzserbetci.github.io/generate-time-series/).
 
