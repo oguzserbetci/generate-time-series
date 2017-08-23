@@ -1,9 +1,10 @@
 # Synthetic time series generation for training simple multi-layer-perceptron classifier
 A time series data is a series of measurements which have been gathered periodically over time, often with equal intervals.
-Classifying time series data for signal processing and pattern recognition on portable devices is desirable in many applications.
-Since pre-trained simple artificial neural networks are very fast at prediction, they can be utilized for these applications.
-One bottleneck for this approach is that ANNs require large datasets to train on to not overfit.
-This project explores a way to generate synthetic time series data from existing datasets to help neural networks not overfit on small datasets.
+Examples of time series include phoneme recordings, hand gestures, temperature and electricity usage over time.
+Thus, classifying time series data on portable devices for signal processing and pattern recognition is important in many applications.
+Pre-trained simple artificial neural networks can be utilized for fast prediction with low computation cost.
+One bottleneck for this approach is that ANNs require large datasets to train on to not overfit and have a good accuracy performance.
+This project explores a way to generate synthetic time series data from an existing dataset to help neural networks not overfit on small datasets.
 
 First, we will modify the *k-means algorithm* to generate synthetic time series data from an existing dataset.
 In Evaluation, we will compare prediction performance of a simple Multi-Layer-Perceptron model trained with the original dataset, the original dataset together with synthetically generated data and a bigger authentic dataset acquired through re-splitting the training and test sets.
@@ -11,12 +12,13 @@ In Evaluation, we will compare prediction performance of a simple Multi-Layer-Pe
 ## Method
 We want to generate new time series data for each class in the original data which carry its characteristics.
 To achieve this, we will modify the k-means clustering algorithm.
-After initializing with _n_ random centroids, the algorithm loops through two steps:
+After initializing with _n_ random centroids, the algorithm normally loops following steps _k_ times:
 1) Assignment step assigns every data to the _closest_ centroid according to a selected distance measure.
 2) Expectation step moves centroids to be in the _center_ of the assigned data, again according to a selected distance measure.
 
-Resulting centroids are typically used for clustering. Instead, we run the k-means algorithm for each class in dataset separately and use the resulting centroids as new data for respective class.
-Other adjustments we do are: a distance measure for time series and a method for calculating mean of time series samples.
+Resulting centroids are typically used for clustering.
+Instead, we run the k-means algorithm for each class in dataset separately and use the resulting centroids as new data for respective class.
+Other adjustments we do are: using a distance measure for time series and a method for calculating mean of time series samples.
 Outline of the procedure is as follows:
 
 1. Initialise centroids with _n_ random data.
@@ -82,12 +84,12 @@ _ORG_: The untouched training sets are labeled with ORG (abbreviation for origin
 See Figure 2 above and Figure 7, 8, 9, 10, 11 in appendix for visualisations of the data.
 
 ### Model
-Because selected datasets are small, reliable model validation is not feasible.
-We use a simple Multi-Layer-Perceptron architecture with: 2 hidden layers with 50 and 30 neurons with rectifier activation and 0.1 dropout.
-Model parameters are selected without validation and prior-knowledge, accordingly, it is only illustrative.
+Because selected datasets are small, reliable model validation was not feasible.
+Thus, we selected the architecture without validation and prior-knowledge, accordingly, it is only illustrative.
+Selected architecture is a simple Multi-Layer-Perceptron architecture with: 2 hidden layers with 50 and 30 neurons with rectifier activation and 0.1 dropout.
 
 ### Evaluations
-Accuracy performance of the MLP is averaged over 10 training runs with 150 epochs.
+We evaluate the training and test accuracy of the MLP, which we averaged over 10 training runs, each with 150 epochs.
 
 #### Wine
 Expanded Wine data is where the results look most promising in our experiments.
@@ -136,8 +138,8 @@ Performance on this dataset is similar to the InlineSkate, better start but same
 > Table 2: Size of generated datasets and MLPs performance
 
 ## Conclusion
-Artificially generating data does not warrant a performance increase for all datasets.
-But for some data, it has substantial benefit despite the simple model we have used.
+Artificially generating time series data does not warrant a performance increase for all datasets.
+But for some, it has substantial benefit despite the simple model we have used.
 Furthermore, there are many parameters that can be tuned to possibly reach higher accuracy.
 
 1. Number of iterations for the k-means algorithm (`n_reps`). We have used 1 iteration.
