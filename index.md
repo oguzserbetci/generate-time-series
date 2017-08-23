@@ -1,4 +1,4 @@
-## Introduction
+# Synthetic time series generation for training simple multi-layer-perceptron classifier
 A time series data is a series of measurements which have been gathered periodically over time, often with equal intervals.
 Classifying time series data for signal processing and pattern recognition on portable devices is desirable in many applications.
 Since pre-trained simple artificial neural networks are very fast at prediction, they can be utilized for these applications.
