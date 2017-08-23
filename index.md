@@ -1,34 +1,34 @@
 ## Introduction
-A time series data point is a series of measurements which have been gathered periodically over time, often with equal intervals.
+A time series data is a series of measurements which have been gathered periodically over time, often with equal intervals.
 Classifying time series data for signal processing and pattern recognition on portable devices is desirable in many applications.
 Since pre-trained simple artificial neural networks are very fast at prediction, they can be utilized for these applications.
 One bottleneck for this approach is that ANNs require large datasets to train on to not overfit.
 This project explores a way to generate synthetic time series data from existing datasets to help neural networks not overfit on small datasets.
 
 First, we will modify the *k-means algorithm* to generate synthetic time series data from an existing dataset.
-In Evaluation, we will compare prediction performance of a simple Multi-Layer-Perceptron model trained with the original dataset, the original dataset together with synthetically generated data points and a bigger authentic dataset acquired through re-splitting the training and test sets.
+In Evaluation, we will compare prediction performance of a simple Multi-Layer-Perceptron model trained with the original dataset, the original dataset together with synthetically generated data and a bigger authentic dataset acquired through re-splitting the training and test sets.
 
 ## Method
-We want to generate new data points which carry the characteristics of the original data.
+We want to generate new time series data for each class in the original data which carry its characteristics.
 To achieve this, we will modify the k-means clustering algorithm.
 After initializing with _n_ random centroids, the algorithm loops through two steps:
-1) Assignment step assigns every data point to the _closest_ centroid according to a selected distance measure.
-2) Expectation step moves centroids to be in the _center_ of the assigned data points, again according to a selected distance measure.
+1) Assignment step assigns every data to the _closest_ centroid according to a selected distance measure.
+2) Expectation step moves centroids to be in the _center_ of the assigned data, again according to a selected distance measure.
 
-Resulting centroids are typically used for clustering. Instead, we run the k-means algorithm for each class seperately and use the resulting clusters as new data points.
+Resulting centroids are typically used for clustering. Instead, we run the k-means algorithm for each class in dataset separately and use the resulting centroids as new data for respective class.
 Other adjustments we do are: a distance measure for time series and a method for calculating mean of time series samples.
 Outline of the procedure is as follows:
 
-1. Initialise centroids with _n_ random data points.
-2. Use _dynamic time warping_ (DTW) as the distance measure to assign data points to centroids. DTW is a distance measure for time series. We use the fastdtw[^1] implemenation for python.
-3. Remove centroids with only one assignment as one assignment mean will not be augmented.
-4. As a sample mean to calculate new centroids, use the Schultz and Jain’s stochastic subgradient mean algorithm [^2].
+1. Initialise centroids with _n_ random data.
+2. Use _dynamic time warping_ (DTW) as the distance measure to assign data to centroids. DTW is a distance measure for time series. We use the fastdtw[^1] implementation for python.
+3. Remove centroids with only one assignment as mean of one assignment will not create a new data.
+4. As a sample mean to calculate new centroids, use the Schultz and Jain’s stochastic subgradient mean algorithm [^2] (SSG).
 5. Repeat step 2 to 4 for k iterations.
 
 ![](img/ArrowHead_DataNewCentroids.png)
 *Figure 1: Example of 3 new centroids generated for a class in ArrowHead. Second centroid is dropped because of step 3.*
 
-The algorithm has 4 parameters: `k` is the number of k-means iterations, `ssg_epochs` is the number of iterations for ssg algorithm, `n_base` controls the number of centroids to be generated (=_n_), intuitively algorithm generates one centroid for every `n_base` data points.
+The algorithm has 4 parameters: `k` is the number of k-means iterations, `ssg_epochs` is the number of iterations for SSG algorithm, `n_base` controls the number of centroids to be generated (=_n_), intuitively algorithm generates one centroid for every `n_base` data.
 Pseudo-code for the whole algorithm is below, you can find the code in the [repo](https://github.com/oguzserbetci/generate-time-series).
 
 ```
@@ -39,8 +39,8 @@ func spawn(data, k, n_base, ssg_epochs):
         c_data ← data with class c
         n ← ceil(|c_data| / n_base)
         repeat k times:
-            centroids ← pick n random data points from c_data
-            allocate each data point from c_data to the nearest centroid using DTW
+            centroids ← pick n random data from c_data
+            allocate each data from c_data to the nearest centroid using DTW
 
             for centroid in centroids:
                 centroid ← SSG(subset of c_data which is allocated to centroid, ssg_epochs)
@@ -50,10 +50,10 @@ func spawn(data, k, n_base, ssg_epochs):
     return new_data
 ```
 
-This function can be then called many times; we called it 10 times and fed the generated data to create new data as well.
+This function may be called many times; we called it 10 times and fed the generated data in each iteration to create new data.
 
 ![](img/ArrowHead_DataGeneration.png)
-*Figure 2: Example of 3 new data points generated for ArrowHead data.*
+*Figure 2: Example of 3 new data generated for ArrowHead data.*
 
 ## Experiments
 We picked sample datasets from the UCR Time Series Classification Archive[^3] to assess the performance of our approach.
@@ -71,7 +71,7 @@ See _Table 1_ for more detail on selected datasets.
 
 ### Data preparation
 We create 3 datasets to compare performance on:
-_EXP_: Original dataset together with synthetic data points generated from it is referred with EXP label (abbreviation for expanded).
+_EXP_: Original dataset together with synthetic data is referred with EXP label (abbreviation for expanded).
 We expand based on the original dataset and merge them before training. We use `k=1`, `n_reps=10`, `n_base=2`, `ssg_epochs=None` – which means SSG algorithm sets it.
 
 _ALT_: We have re-split the training and test data to show the performance gain in case we could collect more data.
@@ -91,7 +91,7 @@ Accuracy performance of the MLP is averaged over 10 training runs with 150 epoch
 
 #### Wine
 Expanded Wine data is where the results look most promising in our experiments.
-It is evident the generated data points help the MLP generalize better, and even perform better than additional authentic data.
+It is evident the generated data help the MLP generalize better, and even perform better than additional authentic data.
 
 ![](img/Wine_Performance_smooth.png)
 *Figure 3: MLP accuracy on Wine training and test sets over training epochs (smoothed over 10 epochs).*
@@ -136,7 +136,7 @@ Performance on this dataset is similar to the InlineSkate, better start but same
 > Table 2: Size of generated datasets and MLPs performance
 
 ## Conclusion
-Artificially generating data points does not warrant a performance increase for all datasets.
+Artificially generating data does not warrant a performance increase for all datasets.
 But for some data, it has substantial benefit despite the simple model we have used.
 Furthermore, there are many parameters that can be tuned to possibly reach higher accuracy.
 
@@ -159,13 +159,13 @@ Furthermore, there are many parameters that can be tuned to possibly reach highe
 ![](img/InlineSkate_Examples.png)
 *Figure 9: Examples of classes from the original InlineSkate dataset.*
 
-### SYNTHETIC DATA POINTS
+### SYNTHETIC DATA
 
 ![](img/InlineSkate_DataGeneration.png)
-*Figure 10: Examples of data points generated for classes from original InlineSkate dataset.*
+*Figure 10: Examples of data generated for classes from original InlineSkate dataset.*
 
 ![](img/Adiac_DataGeneration.png)
-*Figure 11: Examples of data points generated for classes from original Adiac dataset.*
+*Figure 11: Examples of data generated for classes from original Adiac dataset.*
 
 ## References
 
